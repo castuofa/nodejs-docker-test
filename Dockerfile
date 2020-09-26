@@ -1,19 +1,8 @@
-# base image
-FROM alpine
-# port exposed
+FROM node:lts-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+RUN npm ci --only=production
+COPY . .
 EXPOSE 80
-# copy current directory into /mnt
-COPY . /mnt
-# install dependencies
-RUN apk update && \
-    apk add nodejs && \
-    apk add npm && \
-    apk add build-base && \
-    apk add python && \
-    cd mnt && \
-    npm install && \
-    apk del build-base && \
-    apk del python && \
-    apk del npm;
-# command executed at run
-CMD ["/bin/sh", "-c", "cd /mnt; node index.js;"]
+CMD [ "node", "index.js" ]
